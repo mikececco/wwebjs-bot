@@ -17,7 +17,15 @@ const client = new Client({
   }),
   puppeteer: {
     headless: true,
-    args: ['--no-sandbox', '--disable-gpu'],
+    args: [
+      '--no-sandbox',
+      '--disable-gpu',
+      '--disable-dev-shm-usage', // Overcome limited resource problems
+      '--disable-setuid-sandbox',
+      '--disable-extensions',
+      '--disable-infobars',
+      '--window-size=1280,800',
+    ],
   },
   webVersionCache: { type: 'remote', remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html' },
 });
