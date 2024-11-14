@@ -6,6 +6,8 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+console.log('HI');
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public')); // Serve static files from the public directory
