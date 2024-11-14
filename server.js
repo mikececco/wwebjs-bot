@@ -57,21 +57,8 @@ function scheduleMessage(phoneNumber, message, dateTime) {
 
 // Serve the form at the root path
 app.get('/', (req, res) => {
-  res.send(`
-    <form action="/schedule" method="POST">
-      <label for="phone">Phone Number:</label>
-      <input type="text" id="phone" name="phone" required><br><br>
-      
-      <label for="message">Message:</label>
-      <textarea id="message" name="message" required></textarea><br><br>
-      
-      <label for="datetime">Select Date and Time:</label>
-      <input type="datetime-local" id="datetime" name="datetime" required><br><br>
-      
-      <input type="submit" value="Schedule Message">
-    </form>
-  `);
-});
+    res.sendFile(__dirname + '/public/index.html'); // Serve the index.html file
+  });
 
 // Handle form submission
 app.post('/schedule', (req, res) => {

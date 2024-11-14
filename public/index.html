@@ -1,0 +1,24 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Message Scheduler</title>
+</head>
+<body>
+    <h1>Schedule a WhatsApp Message</h1>
+    <form action="/schedule" method="POST">
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" name="phone" required><br><br>
+        
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea><br><br>
+        
+        <label for="datetime">Select Date and Time:</label>
+        <input type="datetime-local" id="datetime" name="datetime" required><br><br>
+        
+        <input type="submit" value="Schedule Message">
+    </form>
+</body>
+</html>
