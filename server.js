@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -9,25 +10,17 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public')); // Serve static files from the public directory
 
-// Create a new instance of the Client
-// const client = new Client({
-//   authStrategy: new LocalAuth(),
-// });
-
 // Create a new instance of the Client with specific configurations
 const client = new Client({
-    // Use the LocalAuth strategy (store the QR code session locally)
-    authStrategy: new LocalAuth(),
-    // Puppeteer configuration (the library used by whatsapp-web.js)
-    puppeteer: {
-      // Run Puppeteer in headless mode (without a GUI)
-      headless: true,
-      // Additional arguments for Puppeteer
-      args: ['--no-sandbox', '--disable-gpu'],
-    },
-    // Fetch the WhatsApp web version from a remote source
-    webVersionCache: { type: 'remote', remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html' },
-  });
+  authStrategy: new LocalAuth({
+    dataPath: path.join('/tmp', '.wwebjs_auth'), // Use /tmp for session storage
+  }),
+  puppeteer: {
+    headless: true,
+    args: ['--no-sandbox', '--disable-gpu'],
+  },
+  webVersionCache: { type: 'remote', remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html' },
+});
 
 // Initialize the WhatsApp client
 client.initialize();
