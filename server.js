@@ -18,25 +18,20 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
-        timeout: 60000, // Increase timeout to 60 seconds
-        executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome',
+        executablePath: '/usr/bin/chromium',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            '--single-process',
             '--disable-gpu',
             '--disable-software-rasterizer',
             '--disable-web-security',
-            '--disable-features=IsolateOrigins,site-per-process',
-            '--ignore-certificate-errors'
-        ],
-        ignoreDefaultArgs: ['--disable-extensions'],
-    },
-    webVersion: '2.2414.10' // Specify a stable web version
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-features=IsolateOrigins,site-per-process'
+        ]
+    }
 });
 
 // Add error handling
