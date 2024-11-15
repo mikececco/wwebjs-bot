@@ -17,6 +17,9 @@ const client = new Client({
         dataPath: path.join('/tmp', '.wwebjs_auth'),
     }),
     puppeteer: {
+        headless: true,
+        timeout: 60000, // Increase timeout to 60 seconds
+        executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -25,11 +28,29 @@ const client = new Client({
             '--no-first-run',
             '--no-zygote',
             '--single-process',
-            '--disable-gpu'
-        ]
-    }
+            '--disable-gpu',
+            '--disable-software-rasterizer',
+            '--disable-web-security',
+            '--disable-features=IsolateOrigins,site-per-process',
+            '--ignore-certificate-errors'
+        ],
+        ignoreDefaultArgs: ['--disable-extensions'],
+    },
+    webVersion: '2.2414.10' // Specify a stable web version
 });
 
+// Add error handling
+client.on('auth_failure', msg => {
+    console.error('Authentication failure:', msg);
+});
+
+client.on('disconnected', (reason) => {
+    console.log('Client was disconnected:', reason);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
 // Initialize WebSocket server
 const wss = new WebSocket.Server({ noServer: true });
 
