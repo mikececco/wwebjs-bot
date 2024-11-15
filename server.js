@@ -11,6 +11,10 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+// Find Chromium executable path
+const findChromiumExecutable = () => {
+    return require('puppeteer').executablePath();
+};
 
 const client = new Client({
     authStrategy: new LocalAuth({
@@ -18,21 +22,26 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
-        executablePath: '/usr/bin/chromium',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
             '--disable-gpu',
-            '--disable-software-rasterizer',
-            '--disable-web-security',
             '--no-first-run',
             '--no-zygote',
-            '--single-process',
-            '--disable-features=IsolateOrigins,site-per-process'
+            '--single-process'
         ]
     }
 });
+
+// Add debugging information
+console.log('Chrome path:', '/usr/bin/chromium-browser');
+console.log('Current directory:', process.cwd());
+try {
+    console.log('Directory contents of /usr/bin:', require('fs').readdirSync('/usr/bin').filter(file => file.includes('chrom')));
+} catch (error) {
+    console.error('Error reading directory:', error);
+}
 
 // Add error handling
 client.on('auth_failure', msg => {
