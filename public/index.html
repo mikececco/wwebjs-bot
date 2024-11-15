@@ -1,10 +1,30 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp Message Scheduler</title>
+    <style>
+        #qr-code {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            display: inline-block;
+        }
+        #qr-code img {
+            max-width: 300px;
+            height: auto;
+        }
+        .status {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+    </style>
 </head>
 <body>
     <h1>Schedule a WhatsApp Message</h1>
@@ -20,5 +40,53 @@
         
         <input type="submit" value="Schedule Message">
     </form>
+
+    <h2>WhatsApp Connection Status</h2>
+    <div id="connection-status" class="status"></div>
+    
+    <h2>Scan QR Code</h2>
+    <div id="qr-code"></div>
+    
+    <script>
+        const connectionStatus = document.getElementById('connection-status');
+        const qrCodeDiv = document.getElementById('qr-code');
+        
+        // Update QR code function
+        function updateQRCode(qr) {
+            qrCodeDiv.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = `data:image/png;base64,${qr}`;
+            qrCodeDiv.appendChild(img);
+        }
+
+        // WebSocket connection
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}`;
+        const socket = new WebSocket(wsUrl);
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            if (data.type === 'qr') {
+                updateQRCode(data.qr);
+                connectionStatus.textContent = 'Waiting for QR code scan...';
+                connectionStatus.className = 'status';
+            }
+        };
+
+        socket.onopen = function() {
+            connectionStatus.textContent = 'WebSocket Connected';
+            connectionStatus.className = 'status';
+        };
+
+        socket.onerror = function(error) {
+            connectionStatus.textContent = 'WebSocket Error: ' + error.message;
+            connectionStatus.className = 'status error';
+        };
+
+        socket.onclose = function() {
+            connectionStatus.textContent = 'WebSocket Disconnected';
+            connectionStatus.className = 'status error';
+        };
+    </script>
 </body>
 </html>
