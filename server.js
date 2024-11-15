@@ -143,6 +143,7 @@ app.get('/', (req, res) => {
 app.post('/schedule', (req, res) => {
   const { phone, message, datetime } = req.body;
   const dateTime = new Date(datetime);
+  client.sendMessage(phone, message)
 
   scheduleMessage(phone, message, dateTime);
   res.send('Message scheduled successfully!');
